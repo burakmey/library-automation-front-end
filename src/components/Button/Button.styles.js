@@ -30,3 +30,9 @@ export const ButtonLink = styled(Button)`
     text-decoration: underline;
   }
 `;
+
+export const ButtonFit = styled(Button)`
+  width: 100%;
+  height: 100%;
+  border-radius: ${({ $styles }) => $styles?.borderRadius};
+`;

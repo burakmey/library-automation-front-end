@@ -1,3 +1,3 @@
-import { ButtonLarge, ButtonLink } from "./Button.styles";
+import { ButtonLarge, ButtonLink, ButtonFit } from "./Button.styles";
 
-export { ButtonLarge, ButtonLink };
+export { ButtonLarge, ButtonLink, ButtonFit };
