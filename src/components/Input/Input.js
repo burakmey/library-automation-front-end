@@ -1,3 +1,3 @@
-import { InputForm } from "./Input.styles";
+import { InputForm, InputSearch } from "./Input.styles";
 
-export { InputForm };
+export { InputForm, InputSearch };

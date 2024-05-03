@@ -9,8 +9,15 @@ const Input = styled.input`
     outline: none;
   }
 `;
-
 export const InputForm = styled(Input).attrs({ autoComplete: "off", autoCorrect: "off", spellCheck: "false" })`
+  border-radius: 3px;
+  border: none;
+  padding: 10px;
+  height: 40px;
+  background-color: #313841;
+  color: var(--input-text);
+`;
+export const InputSearch = styled(Input).attrs({ autoComplete: "off", autoCorrect: "off", spellCheck: "false" })`
   border-radius: 3px;
   border: none;
   padding: 10px;
