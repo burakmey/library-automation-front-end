@@ -11,7 +11,6 @@ const Button = styled.button`
   margin: ${({ $styles }) => $styles?.margin};
   padding: ${({ $styles }) => $styles?.padding};
 `;
-
 export const ButtonLarge = styled(Button)`
   width: 100%;
   height: 44px;
@@ -19,9 +18,9 @@ export const ButtonLarge = styled(Button)`
   font-weight: 500;
   line-height: 24px;
   background-color: var(--brand-experiment);
+  background-color: #2b61ab;
   color: white;
 `;
-
 export const ButtonLink = styled(Button)`
   display: inline-block;
   color: var(--text-link);
@@ -30,9 +29,13 @@ export const ButtonLink = styled(Button)`
     text-decoration: underline;
   }
 `;
-
 export const ButtonFit = styled(Button)`
   width: 100%;
   height: 100%;
   border-radius: ${({ $styles }) => $styles?.borderRadius};
+`;
+export const SearchButton = styled.button`
+  display: inline-flex;
+  margin-left: 20px;
+  cursor: pointer;
 `;
