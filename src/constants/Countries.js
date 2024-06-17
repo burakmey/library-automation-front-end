@@ -1,0 +1,20 @@
+const countries = [
+  { id: 1, name: "Türkiye" },
+  { id: 2, name: "Azerbaycan" },
+  { id: 3, name: "Rusya" },
+  { id: 4, name: "İngiltere" },
+  { id: 5, name: "Fransa" },
+  { id: 6, name: "İtalya" },
+  { id: 7, name: "İspanya" },
+  { id: 8, name: "Belçika" },
+  { id: 9, name: "Yunanistan" },
+  { id: 10, name: "Portekiz" },
+  { id: 11, name: "Amerika" },
+  { id: 12, name: "Brezilya" },
+  { id: 13, name: "Arjantin" },
+  { id: 14, name: "Kanada" },
+  { id: 15, name: "Japonya" },
+  { id: 16, name: "Almanya" },
+  { id: 17, name: "Çin" },
+];
+export default countries;
