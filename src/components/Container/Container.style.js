@@ -2,10 +2,9 @@ import styled from "styled-components";
 
 export const MainContainer = styled.div`
   position: relative;
-  width: 100vw;
   min-height: 100vh;
   overflow: auto;
-  background-color: ${({ $styles }) => $styles?.backgroundColor};
+  background: ${({ $styles }) => $styles?.background};
 `;
 export const Wrapper = styled.div`
   display: flex;
