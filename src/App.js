@@ -1,29 +1,62 @@
 import { useEffect } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import Layout from "./components/Layout";
-import { AdminPanel, SearchBook, Home, Login, Register, AddBook } from "./pages/Pages";
+import RequireAuth from "./components/RequireAuth";
+import PersistLogin from "./components/PersistLogin";
+import RequireNotAuth from "./components/RequireNotAuth";
+import {
+  AdminPanel,
+  SearchBook,
+  Home,
+  Login,
+  Register,
+  AddBook,
+  ReviewBook,
+  UpdateBook,
+  Profile,
+  BorrowedBooks,
+  Fines,
+  PendingApproval,
+  ReservedBooks,
+  ReturnedBooks,
+} from "./pages/Pages";
 
 function App() {
-  console.log("App mounted!");
-
   useEffect(() => {
+    console.log("App mounted!");
     return () => console.log("App unmounted!");
   }, []);
 
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/search" element={<SearchBook />} />
-        <Route path="/admin" element={<Layout />}>
-          <Route path="/admin" element={<AdminPanel />} />
-          <Route path="/admin/add" element={<AddBook />} />
+        <Route element={<PersistLogin />}>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route element={<RequireNotAuth />}>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Route>
+          <Route path="/search" element={<Layout />}>
+            <Route path="/search" element={<SearchBook />} />
+            <Route path="/search/book" element={<ReviewBook />} />
+          </Route>
+          {/* Protected Routes "User", "Admin" */}
+          <Route path="/profile" element={<RequireAuth allowedRoles={["User", "Admin"]} />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/borrowed" element={<BorrowedBooks />} />
+            <Route path="/profile/fines" element={<Fines />} />
+            <Route path="/profile/pending" element={<PendingApproval />} />
+            <Route path="/profile/reserved" element={<ReservedBooks />} />
+            <Route path="/profile/returned" element={<ReturnedBooks />} />
+          </Route>
+          {/* Protected Routes "Admin" */}
+          <Route path="/admin" element={<RequireAuth allowedRoles={["Admin"]} />}>
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/admin/add" element={<AddBook />} />
+            <Route path="/admin/update" element={<UpdateBook />} />
+          </Route>
         </Route>
-        {/* Protected Routes */}
-
         {/* Catch All */}
         <Route
           path="*"
