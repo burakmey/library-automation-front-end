@@ -3,12 +3,12 @@ import axios from "../api/axios";
 
 const useRefreshToken = () => {
   const refreshURL = process.env.REACT_APP_AUTH_REFRESH_URL;
-  const { setUserData } = useAuthContext();
+  const { updateUserData } = useAuthContext();
 
   const refresh = async () => {
     try {
       const refreshResponse = await axios.post(refreshURL, {}, { withCredentials: true });
-      setUserData(refreshResponse.data);
+      updateUserData(refreshResponse.data);
     } catch (error) {
       return Promise.reject(error);
     }
