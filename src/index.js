@@ -4,13 +4,21 @@ import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./constants/GlobalStyle";
 import "./index.css";
+import { AuthProvider } from "./context/AuthContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <GlobalStyle />
     <Routes>
-      <Route path="/*" element={<App />} />
+      <Route
+        path="/*"
+        element={
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        }
+      />
     </Routes>
   </BrowserRouter>
 );
