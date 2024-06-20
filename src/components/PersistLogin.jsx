@@ -4,18 +4,17 @@ import useAuthContext from "../hooks/useAuthContext";
 import useRefreshToken from "../hooks/useRefreshToken";
 
 function PersistLogin() {
-  console.log("PersistLogin mounted!");
-
   const [isLoading, setIsLoading] = useState(true);
   const refresh = useRefreshToken();
   const { userData } = useAuthContext();
 
   useEffect(() => {
+    console.log("PersistLogin mounted!");
     const verifyRefreshToken = async () => {
       try {
         await refresh();
       } catch (error) {
-        console.error(error);
+        //console.error(error);
       } finally {
         setIsLoading(false);
       }
@@ -24,7 +23,7 @@ function PersistLogin() {
     return () => {
       console.log("PersistLogin unmounted!");
     };
-  }, []);
+  }, [refresh, userData]);
 
   return <>{isLoading ? <p>Loading...</p> : <Outlet />}</>;
 }

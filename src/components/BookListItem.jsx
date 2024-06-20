@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 function BookListItem() {
-  console.log("BookListItem mounted!");
-
   useEffect(() => {
+    console.log("BookListItem mounted!");
     return () => console.log("BookListItem unmounted!");
   }, []);
 
@@ -35,7 +34,7 @@ const BookItem = styled.li`
   justify-content: space-between;
   text-align: center;
   overflow-wrap: break-word;
-  @media (max-width: 480px) {
+  @media (max-width: 500px) {
     margin: 25px 0;
   }
 `;
