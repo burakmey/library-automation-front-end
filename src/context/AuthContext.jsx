@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { UserData } from "../contracts/UserData";
 
 const AuthContext = createContext();
 
@@ -6,7 +7,11 @@ export const AuthProvider = ({ children }) => {
   console.log("AuthContext mounted!");
 
   const [userData, setUserData] = useState(null);
-  const values = { userData, setUserData };
+  const updateUserData = (response) => {
+    const user = new UserData(response);
+    setUserData(user);
+  };
+  const values = { userData, updateUserData };
 
   useEffect(() => {
     return () => console.log("App unmounted!");
