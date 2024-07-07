@@ -22,7 +22,8 @@ function NavigationBar() {
       <Nav>
         <NavLink to="/">Ana Sayfa</NavLink>
         <NavLink to="/search">Kitap Ara</NavLink>
-        <NavLink to="/admin">Hakkımızda</NavLink>
+        <NavLink to="/">Hakkımızda</NavLink>
+        {userData?.role === "Admin" ? <NavLink to="/admin">Yönetici Paneli</NavLink> : null}
       </Nav>
       {!userData ? (
         <ButtonLink to="/login" $styles={{ padding: "7px 16px" }}>
