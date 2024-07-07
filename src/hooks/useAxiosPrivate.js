@@ -25,13 +25,17 @@ const useAxiosPrivate = () => {
         return response;
       },
       async (error) => {
-        const previousRequest = error?.config;
-        await refresh()
-          .then(() => {
-            previousRequest.headers["Authorization"] = `Bearer ${userData.accessToken}`;
-            return axiosPrivate(previousRequest);
-          })
-          .catch((error) => Promise.reject(error));
+        const { response } = error;
+        if (response && response.status === 401) {
+          const previousRequest = error?.config;
+          await refresh()
+            .then(() => {
+              previousRequest.headers["Authorization"] = `Bearer ${userData.accessToken}`;
+              return axiosPrivate(previousRequest);
+            })
+            .catch((error) => Promise.reject(error));
+        }
+        return Promise.reject(error);
       }
     );
     return () => {
@@ -39,7 +43,7 @@ const useAxiosPrivate = () => {
       axiosPrivate.interceptors.response.eject(responseIntercept);
       console.log("useAxiosPrivate unmounted!");
     };
-  }, [accessToken, refresh]);
+  }, [userData, refresh]);
   return axiosPrivate;
 };
 
