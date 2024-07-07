@@ -1,8 +1,10 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-function BookListItem() {
+function BookListItem({ book }) {
+  const navigate = useNavigate();
+
   useEffect(() => {
     console.log("BookListItem mounted!");
     return () => console.log("BookListItem unmounted!");
@@ -11,8 +13,8 @@ function BookListItem() {
   return (
     <BookItem>
       <Image>Kitap Resim</Image>
-      <BookName>Kitap Adı</BookName>
-      <ReviewButton to={"/search/book"}>İncele</ReviewButton>
+      <BookName>{book.name}</BookName>
+      <ReviewButton onClick={() => navigate("/search/book", { state: book })}>İncele</ReviewButton>
     </BookItem>
   );
 }
@@ -48,7 +50,7 @@ const BookName = styled.p`
   max-width: 100%;
   font-weight: 600;
 `;
-const ReviewButton = styled(Link)`
+const ReviewButton = styled.button`
   color: var(--text-black);
   background-color: #fff;
   border-radius: 40px;
