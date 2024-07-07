@@ -39,3 +39,15 @@ export const SearchButton = styled.button`
   margin-left: 20px;
   cursor: pointer;
 `;
+
+export const AcceptButton = styled.button`
+  display: inline-flex;
+  background: green;
+  cursor: pointer;
+`;
+
+export const RejectButton = styled.button`
+  display: inline-flex;
+  background: red;
+  cursor: pointer;
+`;
