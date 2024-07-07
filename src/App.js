@@ -16,9 +16,11 @@ import {
   Profile,
   BorrowedBooks,
   Fines,
-  PendingApproval,
+  WaitingDesires,
   ReservedBooks,
-  ReturnedBooks,
+  AcceptDesires,
+  BorrowedList,
+  ReservedList,
 } from "./pages/Pages";
 
 function App() {
@@ -46,15 +48,17 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/borrowed" element={<BorrowedBooks />} />
             <Route path="/profile/fines" element={<Fines />} />
-            <Route path="/profile/pending" element={<PendingApproval />} />
+            <Route path="/profile/waiting" element={<WaitingDesires />} />
             <Route path="/profile/reserved" element={<ReservedBooks />} />
-            <Route path="/profile/returned" element={<ReturnedBooks />} />
           </Route>
           {/* Protected Routes "Admin" */}
           <Route path="/admin" element={<RequireAuth allowedRoles={["Admin"]} />}>
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/admin/add" element={<AddBook />} />
             <Route path="/admin/update" element={<UpdateBook />} />
+            <Route path="/admin/desires" element={<AcceptDesires />} />
+            <Route path="/admin/borrowedList" element={<BorrowedList />} />
+            <Route path="/admin/reservedList" element={<ReservedList />} />
           </Route>
         </Route>
         {/* Catch All */}
