@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./constants/GlobalStyle";
 import "./index.css";
 import { AuthProvider } from "./context/AuthContext";
+import { AdminProvider } from "./context/AdminContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,7 +16,9 @@ root.render(
         path="/*"
         element={
           <AuthProvider>
-            <App />
+            <AdminProvider>
+              <App />
+            </AdminProvider>
           </AuthProvider>
         }
       />
