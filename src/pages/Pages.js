@@ -7,14 +7,16 @@ import SearchBook from "./Anonymous/SearchBook";
 // User's pages.
 import BorrowedBooks from "./User/BorrowedBooks";
 import Fines from "./User/Fines";
-import PendingApproval from "./User/PendingApproval";
+import WaitingDesires from "./User/WaitingDesires";
 import Profile from "./User/Profile";
 import ReservedBooks from "./User/ReservedBooks";
-import ReturnedBooks from "./User/ReturnedBooks";
 // Admin's pages.
 import AddBook from "./Admin/AddBook";
 import AdminPanel from "./Admin/AdminPanel";
 import UpdateBook from "./Admin/UpdateBook";
+import AcceptDesires from "./Admin/AcceptDesires";
+import BorrowedList from "./Admin/BorrowedList";
+import ReservedList from "./Admin/ReservedList";
 
 export {
   Home,
@@ -24,11 +26,13 @@ export {
   SearchBook,
   BorrowedBooks,
   Fines,
-  PendingApproval,
+  WaitingDesires,
   Profile,
   ReservedBooks,
-  ReturnedBooks,
   AddBook,
   AdminPanel,
   UpdateBook,
+  AcceptDesires,
+  BorrowedList,
+  ReservedList,
 };
