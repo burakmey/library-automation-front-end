@@ -1,18 +1,16 @@
 import { axiosPrivate } from "../api/axios";
 import { useEffect } from "react";
-import useRefreshToken from "./useRefreshToken";
 import useAuthContext from "./useAuthContext";
 
 const useAxiosPrivate = () => {
   console.log("useAxiosPrivate mounted!");
-  const refresh = useRefreshToken();
-  const { userData } = useAuthContext();
+  const { user, authRefresh } = useAuthContext();
 
   useEffect(() => {
     const requestIntercept = axiosPrivate.interceptors.request.use(
       (request) => {
-        if (request.headers["Authorization"] !== userData.accessToken) {
-          request.headers["Authorization"] = `Bearer ${userData.accessToken}`;
+        if (request.headers["Authorization"] !== user.accessToken) {
+          request.headers["Authorization"] = `Bearer ${user.accessToken}`;
         }
         return request;
       },
@@ -28,9 +26,9 @@ const useAxiosPrivate = () => {
         const { response } = error;
         if (response && response.status === 401) {
           const previousRequest = error?.config;
-          await refresh()
+          await authRefresh()
             .then(() => {
-              previousRequest.headers["Authorization"] = `Bearer ${userData.accessToken}`;
+              previousRequest.headers["Authorization"] = `Bearer ${user.accessToken}`;
               return axiosPrivate(previousRequest);
             })
             .catch((error) => Promise.reject(error));
@@ -43,7 +41,7 @@ const useAxiosPrivate = () => {
       axiosPrivate.interceptors.response.eject(responseIntercept);
       console.log("useAxiosPrivate unmounted!");
     };
-  }, [userData, refresh]);
+  }, [user, authRefresh]);
   return axiosPrivate;
 };
 
