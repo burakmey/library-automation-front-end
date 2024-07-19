@@ -1,29 +1,27 @@
 import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useAuthContext from "../hooks/useAuthContext";
-import useRefreshToken from "../hooks/useRefreshToken";
 
 function PersistLogin() {
   const [isLoading, setIsLoading] = useState(true);
-  const refresh = useRefreshToken();
-  const { userData } = useAuthContext();
+  const { user, authRefresh } = useAuthContext();
 
   useEffect(() => {
     console.log("PersistLogin mounted!");
     const verifyRefreshToken = async () => {
       try {
-        await refresh();
+        await authRefresh();
       } catch (error) {
-        //console.error(error);
+        console.error(error);
       } finally {
         setIsLoading(false);
       }
     };
-    !userData ? verifyRefreshToken() : setIsLoading(false);
+    !user ? verifyRefreshToken() : setIsLoading(false);
     return () => {
       console.log("PersistLogin unmounted!");
     };
-  }, [refresh, userData]);
+  }, [user, authRefresh]);
 
   return <>{isLoading ? <p>Loading...</p> : <Outlet />}</>;
 }

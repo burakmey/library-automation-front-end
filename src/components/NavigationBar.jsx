@@ -4,9 +4,10 @@ import styled from "styled-components";
 import logo from "../assets/pictures/omu-logo.png";
 import userIcon from "../assets/icons/user.png";
 import useAuthContext from "../hooks/useAuthContext";
+import { protecteRoutesdUser, publicRoutes } from "../constants/RouteEndpoints";
 
 function NavigationBar() {
-  const { userData } = useAuthContext();
+  const { user } = useAuthContext();
 
   useEffect(() => {
     console.log("NavigationBar mounted!");
@@ -15,22 +16,22 @@ function NavigationBar() {
 
   return (
     <NavBarContainer>
-      <LogoContainer to="/">
+      <LogoContainer to={publicRoutes.base}>
         <Logo src={logo} alt="OMU logo" />
-        <LogoText>OMU Kütüphane</LogoText>
+        <LogoText>OMU Library</LogoText>
       </LogoContainer>
       <Nav>
-        <NavLink to="/">Ana Sayfa</NavLink>
-        <NavLink to="/search">Kitap Ara</NavLink>
-        <NavLink to="/">Hakkımızda</NavLink>
-        {userData?.role === "Admin" ? <NavLink to="/admin">Yönetici Paneli</NavLink> : null}
+        <NavLink to={publicRoutes.base}>Home</NavLink>
+        <NavLink to={publicRoutes.search}>Search Book</NavLink>
+        <NavLink to={publicRoutes.base}>About</NavLink>
+        {user?.role === "Admin" ? <NavLink to="/admin">Admin Panel</NavLink> : null}
       </Nav>
-      {!userData ? (
-        <ButtonLink to="/login" $styles={{ padding: "7px 16px" }}>
-          Giriş Yap
+      {!user ? (
+        <ButtonLink to={publicRoutes.login} $styles={{ padding: "7px 16px" }}>
+          Login
         </ButtonLink>
       ) : (
-        <ButtonLink to="/profile" $styles={{ padding: "" }}>
+        <ButtonLink to={protecteRoutesdUser.profile} $styles={{ padding: "" }}>
           <UserButton src={userIcon} alt="User" />
         </ButtonLink>
       )}

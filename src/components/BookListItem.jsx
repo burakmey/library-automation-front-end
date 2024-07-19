@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { publicRoutes } from "../constants/RouteEndpoints";
 
 function BookListItem({ book }) {
   const navigate = useNavigate();
@@ -12,9 +13,9 @@ function BookListItem({ book }) {
 
   return (
     <BookItem>
-      <Image>Kitap Resim</Image>
+      <Image>Book Image</Image>
       <BookName>{book.name}</BookName>
-      <ReviewButton onClick={() => navigate("/search/book", { state: book })}>İncele</ReviewButton>
+      <ReviewButton onClick={() => navigate(publicRoutes.search, { state: book })}>Review</ReviewButton>
     </BookItem>
   );
 }
