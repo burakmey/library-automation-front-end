@@ -1,9 +1,10 @@
 import axios from "axios";
+import { base } from "../constants/ApiEndpoints";
 
-export default axios.create({ baseURL: process.env.REACT_APP_BASE_URL });
+export default axios.create({ baseURL: base });
 
 export const axiosPrivate = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL,
+  baseURL: base,
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
