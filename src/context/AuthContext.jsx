@@ -1,35 +1,29 @@
 import { createContext, useState, useEffect } from "react";
-import { UserData } from "../contracts/UserData";
+import { login, refresh, register } from "../services/authService";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  console.log("AuthContext mounted!");
+  const [user, setUser] = useState(null);
 
-  const [userData, setUserData] = useState(null);
-  const updateUserData = (response) => {
-    const user = new UserData(response);
-    setUserData(user);
-    //console.log(user);
+  const authLogin = async (loginRequest) => {
+    await login(loginRequest).then((userData) => setUser(userData));
   };
-  const updateUserDesires = (response) => {
-    const user = new UserData(userData);
-    user.desires = response;
-    setUserData(user);
+
+  const authRefresh = async () => {
+    // Works like useRefreshToken.
+    await refresh().then((userData) => setUser(userData));
   };
-  const updateUserReservations = (response) => {
-    const user = new UserData(userData);
-    user.userBookReserves = response;
-    setUserData(user);
+
+  const authRegister = async (registerRequest) => {
+    // Do auto login after registering.
+    await register(registerRequest).then((userData) => setUser(userData));
   };
-  const updateUserBorrows = (response) => {
-    const user = new UserData(userData);
-    user.userBookBorrows = response;
-    setUserData(user);
-  };
-  const values = { userData, updateUserData, updateUserDesires, updateUserReservations, updateUserBorrows };
+
+  const values = { user, authLogin, authRefresh, authRegister };
 
   useEffect(() => {
+    console.log("AuthContext mounted!");
     return () => console.log("AuthContext unmounted!");
   }, []);
 

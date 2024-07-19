@@ -1,80 +1,68 @@
 import { createContext, useState, useEffect } from "react";
-import { UserDesire } from "../contracts/UserDesire";
 import useAuthContext from "../hooks/useAuthContext";
-import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { BorrowedBook } from "../contracts/BorrowedBook";
-import { ReservedBook } from "../contracts/ReservedBook";
+import {
+  getAllDesires,
+  getBorrowedBooks,
+  getReservedBooks,
+  acceptBorrow,
+  acceptReserveBorrow,
+  acceptReturn,
+  rejectDesire,
+  addBook,
+  addPublisher,
+  addAuthor,
+  addCategory,
+} from "../services/adminService";
 
 const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-  console.log("AdminContext mounted!");
+  const [usersDesires, setUsersDesires] = useState([]);
+  const [borrowedBooks, setBorrowedBooks] = useState([]);
+  const [reservedBooks, setReservedBooks] = useState([]);
+  const { user } = useAuthContext();
 
-  const [usersDesires, setUsersDesires] = useState(null);
-  const [borrowedBooks, setBorrowedBooks] = useState(null);
-  const [reservedBooks, setReservedBooks] = useState(null);
-  const { userData } = useAuthContext();
-  const axiosPrivate = useAxiosPrivate();
-
-  const updateUsersDesires = (response) => {
-    const desires = response.map((item) => new UserDesire(item));
-    setUsersDesires(desires);
-  };
-  const updateBorrowedBooks = (response) => {
-    const borrows = response.map((item) => new BorrowedBook(item));
-    setBorrowedBooks(borrows);
-  };
-  const updateReservedBooks = (response) => {
-    const reserves = response.map((item) => new ReservedBook(item));
-    setReservedBooks(reserves);
-  };
   const deleteUserDesire = (desireId) => {
     const updatedDesires = usersDesires.filter((item) => item.id !== desireId);
     if (updatedDesires.length === 0) setUsersDesires(null);
     else setUsersDesires(updatedDesires);
   };
 
-  const values = { usersDesires, borrowedBooks, reservedBooks, deleteUserDesire };
+  const values = {
+    usersDesires,
+    borrowedBooks,
+    reservedBooks,
+    deleteUserDesire,
+    getAllDesires,
+    getBorrowedBooks,
+    getReservedBooks,
+    acceptBorrow,
+    acceptReserveBorrow,
+    acceptReturn,
+    rejectDesire,
+    addBook,
+    addPublisher,
+    addAuthor,
+    addCategory,
+  };
 
   useEffect(() => {
-    const fetchDesires = async () => {
+    console.log("AdminContext mounted!");
+    const fetchData = async () => {
       try {
-        const desireURL = process.env.REACT_APP_ADMIN_GET_ALL_DESIRES_URL;
-        const response = await axiosPrivate.post(desireURL);
-        updateUsersDesires(response.data.usersDesires);
+        const [desires, borrowed, reserved] = await Promise.all([getAllDesires(), getBorrowedBooks(), getReservedBooks()]);
+        setUsersDesires(desires);
+        setBorrowedBooks(borrowed);
+        setReservedBooks(reserved);
       } catch (error) {
-        //console.error("Failed to fetch desires:", error);
+        console.error(error);
       }
     };
-    const fetchBorrowedBooks = async () => {
-      try {
-        const borrowURL = process.env.REACT_APP_ADMIN_GET_BORROWED_BOOKS_URL;
-        const response = await axiosPrivate.post(borrowURL);
-        //console.log(response.data);
-        updateBorrowedBooks(response.data.userBookBorrows);
-      } catch (error) {
-        //console.error("Failed to fetch desires:", error);
-      }
-    };
-    const fetchReservedBooks = async () => {
-      try {
-        const reserveURL = process.env.REACT_APP_ADMIN_GET_RESERVED_BOOKS_URL;
-        const response = await axiosPrivate.post(reserveURL);
-        //console.log(response.data);
-        updateReservedBooks(response.data.userBookReserves);
-      } catch (error) {
-        //console.error("Failed to fetch desires:", error);
-      }
-    };
-    if (userData?.role === "Admin") {
-      fetchDesires();
-      fetchBorrowedBooks();
-      fetchReservedBooks();
-    }
+    if (user?.role === "Admin") fetchData();
     return () => {
       console.log("AdminContext unmounted!");
     };
-  }, [userData, axiosPrivate]);
+  }, [user]);
 
   return <AdminContext.Provider value={values}>{children}</AdminContext.Provider>;
 };
