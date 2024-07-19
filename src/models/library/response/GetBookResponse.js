@@ -1,4 +1,4 @@
-export class Book {
+export default class GetBookResponse {
   constructor({ id, name, year, count, pageCount, language, publisher, bookAuthors, bookCategories }) {
     this.id = id;
     this.name = name;
