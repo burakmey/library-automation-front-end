@@ -1,59 +1,47 @@
-import { useEffect, useState } from "react";
-import { InputContainer, MainContainer, Wrapper } from "../../components/Container/Container.style";
-import { TextHeader, TextLabel, TextNormal, TextSpan } from "../../components/Text/Text.styles";
-import { InputForm } from "../../components/Input/Input.styles";
-import { ButtonLarge, ButtonLink } from "../../components/Button/Button.styles";
-import styled from "styled-components";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { ButtonLarge, ButtonLink } from "../../components/Button/Button.styles";
+import { BackgroundContainer, InputContainer, Wrapper } from "../../components/Container/Container.style";
+import { InputForm } from "../../components/Input/Input.styles";
+import { TextHeader, TextLabel, TextNormal, TextSpan } from "../../components/Text/Text.styles";
+import { publicRoutes } from "../../constants/RouteEndpoints";
 import useAuthContext from "../../hooks/useAuthContext";
-import axios from "../../api/axios";
+import { LoginRequest } from "../../models/auth/AuthModels";
 
-const loginURL = process.env.REACT_APP_AUTH_LOGIN_URL;
-const background = "var(--background-radial)";
+const BACKGROUND = "var(--background-radial)";
 
 function Login() {
-  console.log("Login mounted!");
-
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
-  const { updateUserData } = useAuthContext();
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const loginRequest = new LoginRequest({ email: "", password: "" });
+  const { authLogin } = useAuthContext();
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Login mounted!");
     return () => console.log("Login unmounted!");
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setLoginData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    loginRequest[name] = value;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(loginURL, loginData, {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true,
-      });
-      updateUserData(response.data);
-      navigate("/", { replace: true });
+      await authLogin(loginRequest);
+      navigate(publicRoutes.base, { replace: true });
     } catch (error) {
       console.log(error);
-      if (!error?.response) {
-        console.error("No server response!");
-      } else {
-        console.error(error.response.data);
-      }
+      window.confirm(typeof error === "string" ? error : "An unexpected error occurred.");
     }
   };
 
   return (
-    <MainContainer $styles={{ background: background }}>
+    <>
+      <BackgroundContainer $styles={{ background: BACKGROUND }} />
       <LoginFormWrapper>
         <LoginForm onSubmit={handleSubmit}>
           <Row>
@@ -61,43 +49,39 @@ function Login() {
             <Col>
               {/* Header Block */}
               <Col>
-                <TextHeader $styles={{ margin: "0 0 8px" }}>Hoş Geldiniz!</TextHeader>
-                <TextNormal>Size ait olan e-posta ve şifre ile giriş yapın.</TextNormal>
+                <TextHeader $styles={{ margin: "0 0 8px" }}>Welcome!</TextHeader>
+                <TextNormal>Login with your email and password.</TextNormal>
               </Col>
               {/* Login Block */}
               <InputContainer>
-                <TextLabel $styles={{ margin: "0 0 8px" }}>E-POSTA</TextLabel>
-                <InputForm $styles={{ margin: "0 0 20px" }} name="email" type="text" value={loginData.email} onChange={handleChange} />
-                <TextLabel $styles={{ margin: "0 0 8px" }}>ŞİFRE</TextLabel>
-                <InputForm name="password" type="password" value={loginData.password} onChange={handleChange} />
+                <TextLabel $styles={{ margin: "0 0 8px" }}>E-MAIL</TextLabel>
+                <InputForm $styles={{ margin: "0 0 20px" }} name="email" type="text" ref={emailRef} onChange={handleChange} />
+                <TextLabel $styles={{ margin: "0 0 8px" }}>PASSWORD</TextLabel>
+                <InputForm name="password" type="password" ref={passwordRef} onChange={handleChange} />
                 <ButtonLink $styles={{ margin: "4px 0 20px", padding: "2px 0" }} type="button">
-                  Şifrenizi mi unuttunuz?
+                  Forgot your password?
                 </ButtonLink>
                 <ButtonLarge $styles={{ margin: "0 0 10px" }} type="submit">
-                  Giriş Yap
+                  Login
                 </ButtonLarge>
               </InputContainer>
               <div>
-                <TextSpan>Hesabınız yok mu?</TextSpan>
-                <ButtonLink
-                  $styles={{ margin: "0 0 0 4px" }}
-                  type="button"
-                  onClick={() => {
-                    navigate("/register");
-                  }}
-                >
-                  Kayıt ol
+                <TextSpan>Don't have an account?</TextSpan>
+                <ButtonLink $styles={{ margin: "0 0 0 4px" }} type="button" onClick={() => navigate(publicRoutes.register)}>
+                  Register
                 </ButtonLink>
               </div>
             </Col>
           </Row>
         </LoginForm>
       </LoginFormWrapper>
-    </MainContainer>
+    </>
   );
 }
 
 export default Login;
+
+// Styled components.
 
 const Row = styled.div`
   display: flex;

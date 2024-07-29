@@ -1,20 +1,20 @@
 import { useEffect } from "react";
-import { MainContainer, SearchContainer } from "../../components/Container/Container.style";
 import { Link } from "react-router-dom";
-import { TextHeader, TextNormal } from "../../components/Text/Text.styles";
-import { InputSearch } from "../../components/Input/Input.styles";
-import { SearchButton } from "../../components/Button/Button.styles";
-import NavigationBar from "../../components/NavigationBar";
 import styled from "styled-components";
 import heroImage from "../../assets/pictures/hero-section.jpg";
+import { SearchButton } from "../../components/Button/Button.styles";
+import { BackgroundContainer, SearchContainer } from "../../components/Container/Container.style";
+import { InputSearch } from "../../components/Input/Input.styles";
+import { TextHeader, TextNormal } from "../../components/Text/Text.styles";
+import { publicRoutes } from "../../constants/RouteEndpoints";
 import useAuthContext from "../../hooks/useAuthContext";
 
-const background = "var(--background-linear)";
-const notLoggedInText = "Kitap ödünç almak veya rezerve etmek için sistemimize kayıt olabilirsiniz.";
-const loggedInText = "Kütüphanemizden kitap ödünç alabilir veya rezerve edebilirsiniz.";
+const BACKGROUND = "var(--background-linear)";
+const NOT_LOGGED_IN_TEXT = "You can register in our system to borrow or reserve books.";
+const LOGGED_IN_TEXT = "You can borrow or reserve books from our library.";
 
 function Home() {
-  const { userData } = useAuthContext();
+  const { user } = useAuthContext();
 
   useEffect(() => {
     console.log("Home mounted!");
@@ -22,40 +22,50 @@ function Home() {
   }, []);
 
   return (
-    <MainContainer $styles={{ background: background }}>
-      <NavigationBar />
-      <LibraryImage src={heroImage} />
-      <Col>
-        <TextHeader $styles={{ margin: "0 0 20px" }}>Kütüphanemizde Bir Kitap Arayın!</TextHeader>
-        <SearchContainer>
-          <InputSearch />
-          <SearchButton>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor"></path>
-            </svg>
-          </SearchButton>
-        </SearchContainer>
-        <TextNormal $styles={{ margin: "20px 0 0" }}>{!userData ? notLoggedInText : loggedInText}</TextNormal>
-        <ButtonDiv>{!userData ? <ButtonLink to={"/register"}>Kayıt Ol</ButtonLink> : <ButtonLink to={"/search"}>Kitap Ara</ButtonLink>}</ButtonDiv>
-      </Col>
-    </MainContainer>
+    <>
+      <BackgroundContainer $styles={{ background: BACKGROUND }} />
+      <HomeContainer>
+        <LibraryImage src={heroImage} />
+        <Col>
+          <TextHeader $styles={{ margin: "0 0 20px" }}>Search for a book in Our Library!</TextHeader>
+          <SearchContainer>
+            <InputSearch />
+            <SearchButton>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M7 11L12 6L17 11M12 18V7" stroke="currentColor"></path>
+              </svg>
+            </SearchButton>
+          </SearchContainer>
+          <TextNormal $styles={{ margin: "20px 0 0" }}>{!user ? NOT_LOGGED_IN_TEXT : LOGGED_IN_TEXT}</TextNormal>
+          <ButtonDiv>
+            {!user ? <ButtonLink to={publicRoutes.register}>Register</ButtonLink> : <ButtonLink to={publicRoutes.search}>Search Book</ButtonLink>}
+          </ButtonDiv>
+        </Col>
+      </HomeContainer>
+    </>
   );
 }
 
 export default Home;
 
 // Styled components.
+
+const HomeContainer = styled.div`
+  margin-top: 2%;
+`;
+
 const LibraryImage = styled.img`
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
+  margin: auto;
+  width: 40%;
 `;
+
 const ButtonDiv = styled.div`
   display: flex;
   justify-content: center;
   margin: 20px 0 0;
 `;
+
 const ButtonLink = styled(Link)`
   color: var(--text-black);
   background-color: #fff;
