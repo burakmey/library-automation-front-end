@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { publicRoutes } from "../constants/RouteEndpoints";
+import { GetBookResponse } from "../models/library/LibraryModels";
 
-function BookListItem({ book }) {
+function BookListItem({ bookItem }) {
   const navigate = useNavigate();
+  const [book] = useState(bookItem);
 
   useEffect(() => {
     console.log("BookListItem mounted!");
