@@ -1,27 +1,46 @@
-import { createContext, useEffect } from "react";
-import { borrowBook, borrowReservedBook, returnBook, reserveBook, cancelDesire } from "../services/userService";
-import { ReserveResponse, SendDesireResponse } from "../models/user/userModels";
+import { createContext, useEffect, useState } from "react";
+import { ReserveResponse, SendDesireResponse } from "../models/user/UserModels";
+import { borrowBook, borrowReservedBook, returnBook, reserveBook, cancelDesire } from "../services/UserService";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
+  //const [desires, setDesires] = useState(null);
+  const [desires, setDesires] = useState(null);
+  const [reservations, setReservations] = useState(null);
+
   const userBorrowBook = async (bookRequest) => {
-    await borrowBook(bookRequest).then((sendDesireResponse) => new SendDesireResponse(sendDesireResponse));
+    await borrowBook(bookRequest).then((sendDesireResponse) => {
+      const response = new SendDesireResponse(sendDesireResponse);
+      setDesires(response.desires);
+    });
   };
   const userBorrowReservedBook = async (bookRequest) => {
-    await borrowReservedBook(bookRequest).then((sendDesireResponse) => new SendDesireResponse(sendDesireResponse));
+    await borrowReservedBook(bookRequest).then((sendDesireResponse) => {
+      const response = new SendDesireResponse(sendDesireResponse);
+      setDesires(response.desires);
+    });
   };
   const userReturnBook = async (bookRequest) => {
-    await returnBook(bookRequest).then((sendDesireResponse) => new SendDesireResponse(sendDesireResponse));
+    await returnBook(bookRequest).then((sendDesireResponse) => {
+      const response = new SendDesireResponse(sendDesireResponse);
+      setDesires(response.desires);
+    });
   };
   const userReserveBook = async (bookRequest) => {
-    await reserveBook(bookRequest).then((reserveResponse) => new ReserveResponse(reserveResponse));
+    await reserveBook(bookRequest).then((reserveResponse) => {
+      const response = new ReserveResponse(reserveResponse);
+      setReservations(response.reservations);
+    });
   };
   const userCancelDesire = async (desireRequest) => {
-    await cancelDesire(desireRequest).then((sendDesireResponse) => new SendDesireResponse(sendDesireResponse));
+    await cancelDesire(desireRequest).then((sendDesireResponse) => {
+      const response = new SendDesireResponse(sendDesireResponse);
+      setDesires(response.desires);
+    });
   };
 
-  const values = { userBorrowBook, userBorrowReservedBook, userReturnBook, userReserveBook, userCancelDesire };
+  const values = { desires, reservations, userBorrowBook, userBorrowReservedBook, userReturnBook, userReserveBook, userCancelDesire };
 
   useEffect(() => {
     console.log("UserContext mounted!");

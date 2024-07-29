@@ -1,18 +1,6 @@
 import { createContext, useState, useEffect } from "react";
-import useAuthContext from "../hooks/useAuthContext";
-import {
-  getAllDesires,
-  getBorrowedBooks,
-  getReservedBooks,
-  acceptBorrow,
-  acceptReserveBorrow,
-  acceptReturn,
-  rejectDesire,
-  addBook,
-  addPublisher,
-  addAuthor,
-  addCategory,
-} from "../services/adminService";
+import useAuthContext from "../hooks/contexts/useAuthContext";
+import useAdminService from "../hooks/services/useAdminService";
 
 const AdminContext = createContext();
 
@@ -21,6 +9,7 @@ export const AdminProvider = ({ children }) => {
   const [borrowedBooks, setBorrowedBooks] = useState([]);
   const [reservedBooks, setReservedBooks] = useState([]);
   const { user } = useAuthContext();
+  const { getAllDesires, getBorrowedBooks, getReservedBooks } = useAdminService();
 
   const deleteUserDesire = (desireId) => {
     const updatedDesires = usersDesires.filter((item) => item.id !== desireId);
@@ -33,17 +22,6 @@ export const AdminProvider = ({ children }) => {
     borrowedBooks,
     reservedBooks,
     deleteUserDesire,
-    getAllDesires,
-    getBorrowedBooks,
-    getReservedBooks,
-    acceptBorrow,
-    acceptReserveBorrow,
-    acceptReturn,
-    rejectDesire,
-    addBook,
-    addPublisher,
-    addAuthor,
-    addCategory,
   };
 
   useEffect(() => {

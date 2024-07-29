@@ -1,23 +1,45 @@
 import { createContext, useState, useEffect } from "react";
-import { login, refresh, register } from "../services/authService";
+import { UserProvider } from "./UserContext";
+import { AdminProvider } from "./AdminContext";
+import useAuthService from "../hooks/services/useAuthService";
+import { LoginResponse } from "../models/auth/AuthModels";
+import { MessageResponse } from "../models/common/CommonModels";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const { login, refresh, register } = useAuthService();
 
   const authLogin = async (loginRequest) => {
-    await login(loginRequest).then((userData) => setUser(userData));
+    try {
+      const response = await login(loginRequest);
+      const loginResponse = new LoginResponse(response);
+      setUser(loginResponse);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   };
 
   const authRefresh = async () => {
-    // Works like useRefreshToken.
-    await refresh().then((userData) => setUser(userData));
+    try {
+      const response = await refresh();
+      const loginResponse = new LoginResponse(response);
+      setUser(loginResponse);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   };
 
   const authRegister = async (registerRequest) => {
-    // Do auto login after registering.
-    await register(registerRequest).then((userData) => setUser(userData));
+    try {
+      const response = await register(registerRequest);
+      const messageResponse = new MessageResponse(response);
+      return messageResponse;
+      //setUser(loginResponse);
+    } catch (error) {
+      return Promise.reject(error);
+    }
   };
 
   const values = { user, authLogin, authRefresh, authRegister };
@@ -27,7 +49,11 @@ export const AuthProvider = ({ children }) => {
     return () => console.log("AuthContext unmounted!");
   }, []);
 
-  return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={values}>
+      {user ? <UserProvider>{user.role === "Admin" ? <AdminProvider>{children}</AdminProvider> : <>{children}</>}</UserProvider> : <>{children}</>}
+    </AuthContext.Provider>
+  );
 };
 
 export default AuthContext;
