@@ -1,4 +1,4 @@
-import { ReservedResponse } from "../../auth/authModels";
+import { ReservedResponse } from "../../auth/AuthModels";
 
 export default class ReserveResponse {
   constructor({ message, reservations }) {

@@ -1,4 +1,4 @@
-import { BorrowedResponse, ReservedResponse, UserDesireResponse } from "../authModels";
+import { BorrowedResponse, ReservedResponse, UserDesireResponse } from "../AuthModels";
 
 export default class LoginResponse {
   constructor({ accessToken, email, name, surname, registeredAt, nation, role, fines, userBookBorrows, userBookReserves, desires }) {

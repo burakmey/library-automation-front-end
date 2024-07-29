@@ -1,4 +1,4 @@
-import { UserDesireResponse } from "../../auth/authModels";
+import { UserDesireResponse } from "../../auth/AuthModels";
 
 export default class SendDesireResponse {
   constructor({ message, desires }) {
