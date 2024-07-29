@@ -1,11 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import GlobalStyle from "./constants/GlobalStyle";
+import App from "./App";
 import "./index.css";
-import { AuthProvider } from "./context/AuthContext";
-import { AdminProvider } from "./context/AdminContext";
+import { MainContainer } from "./components/Container/Container.style";
+import { MainProvider } from "./context/MainContext";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -15,11 +15,11 @@ root.render(
       <Route
         path="/*"
         element={
-          <AuthProvider>
-            <AdminProvider>
+          <MainProvider>
+            <MainContainer>
               <App />
-            </AdminProvider>
-          </AuthProvider>
+            </MainContainer>
+          </MainProvider>
         }
       />
     </Routes>
