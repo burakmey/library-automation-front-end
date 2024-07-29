@@ -6,6 +6,17 @@ export const MainContainer = styled.div`
   overflow: auto;
   background: ${({ $styles }) => $styles?.background};
 `;
+
+export const BackgroundContainer = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-height: 100vh;
+  min-width: 100vw;
+  z-index: -9;
+  background: ${({ $styles }) => $styles?.background};
+`;
+
 export const Wrapper = styled.div`
   display: flex;
   width: 100%;

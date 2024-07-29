@@ -1,3 +1,3 @@
-import { MainContainer, Wrapper, InputContainer, SearchContainer } from "./Container.style";
+import { MainContainer, BackgroundContainer, Wrapper, InputContainer, SearchContainer } from "./Container.style";
 
-export { MainContainer, Wrapper, InputContainer, SearchContainer };
+export { MainContainer, BackgroundContainer, Wrapper, InputContainer, SearchContainer };
