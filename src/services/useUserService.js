@@ -1,8 +1,8 @@
 import { useCallback } from "react";
-import { user } from "../../constants/ApiEndpoints";
+import { user } from "../constants/ApiEndpoints";
 import useApiPrivate from "../hooks/useApiPrivate";
 
-const useAdminService = () => {
+const useUserService = () => {
   const api = useApiPrivate();
 
   const borrowBook = useCallback(
@@ -74,4 +74,4 @@ const useAdminService = () => {
   };
 };
 
-export default useAdminService;
+export default useUserService;

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { TableContainer, TableData, TableHeader, TableRow, TableWrapper } from "../../components/Table/Table.styles";
 import { MainContainer } from "../../components/Container/Container.style";
+import { TableContainer, TableData, TableHeader, TableRow, TableWrapper } from "../../components/Table/Table.styles";
 import NavigationBar from "../../components/NavigationBar";
 import useAdminContext from "../../hooks/useAdminContext";
 
@@ -23,25 +23,25 @@ function ReservedList() {
           <TableContainer>
             <thead>
               <tr>
-                <TableHeader>Numara</TableHeader>
-                <TableHeader>Kişi Adı</TableHeader>
-                <TableHeader>Kitap Adı</TableHeader>
-                <TableHeader>Durumu</TableHeader>
+                <TableHeader>Number</TableHeader>
+                <TableHeader>User Name</TableHeader>
+                <TableHeader>Book Name</TableHeader>
+                <TableHeader>Situation</TableHeader>
               </tr>
             </thead>
             <tbody>
-              {reservedBooks.map((row, index) => (
+              {reservedBooks.map((reservedBooks, index) => (
                 <TableRow key={index}>
                   <TableData>{index + 1}</TableData>
-                  <TableData>{row.userName}</TableData>
-                  <TableData>{row.bookName}</TableData>
-                  <TableData>{row.situation}</TableData>
+                  <TableData>{reservedBooks.userName}</TableData>
+                  <TableData>{reservedBooks.bookName}</TableData>
+                  <TableData>{reservedBooks.situation}</TableData>
                 </TableRow>
               ))}
             </tbody>
           </TableContainer>
         ) : (
-          "Herhangi bir reserve edilmiş kitap bulunmuyor."
+          "There is no reserved book."
         )}
         <TableContainer></TableContainer>
       </TableWrapper>

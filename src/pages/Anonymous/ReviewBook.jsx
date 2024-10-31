@@ -1,53 +1,63 @@
 import { useEffect } from "react";
-import NavigationBar from "../../components/NavigationBar";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { MainContainer, Wrapper } from "../../components/Container/Container.style";
 import { TextNormal } from "../../components/Text/Text.styles";
-//import { Book } from "../../contracts/Book";
-import { useLocation, useNavigate } from "react-router-dom";
+import NavigationBar from "../../components/NavigationBar";
+import { publicRoutes } from "../../constants/RouteEndpoints";
 import useAuthContext from "../../hooks/useAuthContext";
-import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import useUserContext from "../../hooks/useUserContext";
+import { BookRequest, ReserveResponse, SendDesireResponse } from "../../models/user/UserModels";
+import { GetBookResponse } from "../../models/library/LibraryModels";
+
+const background = "var(--background-linear)";
 
 function ReviewBook() {
   const location = useLocation();
-  const book = location.state;
   const navigate = useNavigate();
-  const { userData, updateUserDesires, updateUserReservations } = useAuthContext();
-  const axiosPrivate = useAxiosPrivate();
+  const { user } = useAuthContext();
+  const { userBorrowBook, userReserveBook } = useUserContext();
+  let book;
+  try {
+    book = new GetBookResponse(location.state);
+  } catch (error) {
+    book = null;
+  }
 
   useEffect(() => {
     console.log("ReviewBook mounted!");
-    if (book === null || book === undefined) navigate("/search");
+    if (book === null || book === undefined) navigate(publicRoutes.search);
     return () => console.log("ReviewBook unmounted!");
   }, [book, navigate]);
 
-  const handleActionButton = (actionType) => {
-    const confirmed = window.confirm(`${actionType === "borrow" ? "Ödünç alma" : "Rezerve etme"} işlemini onaylıyor musunuz?`);
+  const handleBorrowButton = async (e) => {
+    e.preventDefault();
+    const confirmed = window.confirm("Do you want to submit the borrowing request to admin?");
     if (confirmed) {
-      if (actionType === "borrow") {
-        const borrowRequest = async () => {
-          try {
-            const borrowURL = process.env.REACT_APP_USER_BORROW_BOOK_URL;
-            const response = await axiosPrivate.post(borrowURL, { bookId: book.id });
-            updateUserDesires(response.data.desires);
-            window.confirm(response.data.message);
-          } catch (error) {
-            window.confirm(error.response.data);
-          }
-        };
-        borrowRequest();
-      } else if (actionType === "reserve") {
-        const reserveRequest = async () => {
-          try {
-            const reserveURL = process.env.REACT_APP_USER_RESERVE_BOOK_URL;
-            const response = await axiosPrivate.post(reserveURL, { bookId: book.id });
-            updateUserReservations(response.data.reservations);
-            window.confirm(response.data.message);
-          } catch (error) {
-            window.confirm(error.response.data);
-          }
-        };
-        reserveRequest();
+      try {
+        const bookRequest = new BookRequest({ bookId: book.id });
+        const response = await userBorrowBook(bookRequest);
+        const sendDesireResponse = new SendDesireResponse(response);
+        window.confirm(sendDesireResponse.message);
+      } catch (error) {
+        window.confirm(error.response.data);
+      }
+    } else {
+      console.log("Action canceled.");
+    }
+  };
+
+  const handleReserveButton = async (e) => {
+    e.preventDefault();
+    const confirmed = window.confirm("Do you want to submit the reservation?");
+    if (confirmed) {
+      try {
+        const bookRequest = new BookRequest({ bookId: book.id });
+        const response = await userReserveBook(bookRequest);
+        const reserveResponse = new ReserveResponse(response);
+        window.confirm(reserveResponse.message);
+      } catch (error) {
+        window.confirm(error.response.data);
       }
     } else {
       console.log("Action canceled.");
@@ -56,7 +66,7 @@ function ReviewBook() {
 
   if (!book) return null;
   return (
-    <MainContainer $styles={{ background: "var(--background-linear)" }}>
+    <MainContainer $styles={{ background: background }}>
       <NavigationBar />
       <ReviewBookWrapper>
         <ReviewBookContainer>
@@ -73,11 +83,11 @@ function ReviewBook() {
             </Col>
           </BookInfoContainer>
           <ButtonsContainer>
-            <ActionButton $styles={{ isDisabled: !userData }} onClick={!userData ? null : () => handleActionButton("borrow")}>
-              Ödünç Al
+            <ActionButton $styles={{ isDisabled: !user }} onClick={!user ? null : handleBorrowButton}>
+              Borrow
             </ActionButton>
-            <ActionButton $styles={{ isDisabled: !userData }} onClick={!userData ? null : () => handleActionButton("reserve")}>
-              Rezerve Et
+            <ActionButton $styles={{ isDisabled: !user }} onClick={!user ? null : handleReserveButton}>
+              Reserve
             </ActionButton>
           </ButtonsContainer>
         </ReviewBookContainer>

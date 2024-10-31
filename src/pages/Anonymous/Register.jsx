@@ -1,18 +1,27 @@
-import { useEffect, useState } from "react";
-import { InputContainer, MainContainer, Wrapper } from "../../components/Container/Container.style";
-import { TextHeader, TextLabel } from "../../components/Text/Text.styles";
-import { InputForm } from "../../components/Input/Input.styles";
-import { ButtonLarge, ButtonLink } from "../../components/Button/Button.styles";
-import { Select } from "../../components/Select/Select.styles";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import countries from "../../constants/Countries";
 import styled from "styled-components";
-import axios from "../../api/axios";
+import { api } from "../../api/axios";
+import { ButtonLarge, ButtonLink } from "../../components/Button/Button.styles";
+import { BackgroundContainer, InputContainer, Wrapper } from "../../components/Container/Container.style";
+import { InputForm } from "../../components/Input/Input.styles";
+import { Select } from "../../components/Select/Select.styles";
+import { TextHeader, TextLabel } from "../../components/Text/Text.styles";
+import countries from "../../constants/Countries";
 import useAuthContext from "../../hooks/useAuthContext";
+import { publicRoutes } from "../../constants/RouteEndpoints";
+
+const background = "var(--background-radial)";
 
 function Register() {
-  console.log("Register mounted!");
-
+  const inputRefs = useRef({
+    email: null,
+    name: null,
+    surname: null,
+    password: null,
+    confirmPassword: null,
+    countryId: null,
+  });
   const [registerData, setRegisterData] = useState({
     email: "",
     name: "",
@@ -21,12 +30,12 @@ function Register() {
     confirmPassword: "",
     countryId: 1,
   });
-  const registerURL = process.env.REACT_APP_AUTH_REGISTER_URL;
+
   const { updateUserData } = useAuthContext();
   const navigate = useNavigate();
-  const background = "var(--background-radial)";
 
   useEffect(() => {
+    console.log("Register mounted!");
     return () => console.log("Register unmounted!");
   }, []);
 
@@ -40,7 +49,7 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(registerURL, registerData, {
+      const response = await api.post(registerData, {
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
@@ -56,26 +65,33 @@ function Register() {
   };
 
   return (
-    <MainContainer $styles={{ background: background }}>
+    <>
+      <BackgroundContainer $styles={{ background: background }} />
       <RegisterFormWrapper>
         <RegisterForm onSubmit={handleSubmit}>
           <Col>
-            <TextHeader $styles={marginBottom8px}>Bir Hesap Oluştur</TextHeader>
+            <TextHeader $styles={marginBottom8px}>Create an Account</TextHeader>
             <InputContainer>
-              <TextLabel $styles={marginBottom8px}>E-POSTA</TextLabel>
-              <InputForm $styles={marginBottom20px} name="email" type="text" value={registerData.email} onChange={handleChange} />
-              <TextLabel $styles={marginBottom8px}>AD</TextLabel>
-              <InputForm $styles={marginBottom20px} name="name" type="text" value={registerData.name} onChange={handleChange} />
-              <TextLabel $styles={marginBottom8px}>SOYAD</TextLabel>
-              <InputForm $styles={marginBottom20px} name="surname" type="text" value={registerData.surname} onChange={handleChange} />
-              <TextLabel $styles={marginBottom8px}>ŞİFRE</TextLabel>
-              <InputForm $styles={marginBottom20px} name="password" type="password" value={registerData.password} onChange={handleChange} />
-              <TextLabel $styles={marginBottom8px}>ŞİFRE DOĞRULAMA</TextLabel>
-              <InputForm $styles={marginBottom20px} name="confirmPassword" type="password" value={registerData.passwordConfirm} onChange={handleChange} />
-              <TextLabel $styles={marginBottom8px}>ÜLKE</TextLabel>
+              <TextLabel $styles={marginBottom8px}>E-MAIL</TextLabel>
+              <InputForm $styles={marginBottom20px} name="email" type="text" ref={(el) => (inputRefs.current.email = el)} onChange={handleChange} />
+              <TextLabel $styles={marginBottom8px}>NAME</TextLabel>
+              <InputForm $styles={marginBottom20px} name="name" type="text" ref={(el) => (inputRefs.current.name = el)} onChange={handleChange} />
+              <TextLabel $styles={marginBottom8px}>SURNAME</TextLabel>
+              <InputForm $styles={marginBottom20px} name="surname" type="text" ref={(el) => (inputRefs.current.surname = el)} onChange={handleChange} />
+              <TextLabel $styles={marginBottom8px}>PASSWORD</TextLabel>
+              <InputForm $styles={marginBottom20px} name="password" type="password" ref={(el) => (inputRefs.current.password = el)} onChange={handleChange} />
+              <TextLabel $styles={marginBottom8px}>CONFIRM PASSWORD</TextLabel>
+              <InputForm
+                $styles={marginBottom20px}
+                name="confirmPassword"
+                type="password"
+                ref={(el) => (inputRefs.current.confirmPassword = el)}
+                onChange={handleChange}
+              />
+              <TextLabel $styles={marginBottom8px}>COUNTRY</TextLabel>
               <Select
                 name="countryId"
-                value={registerData.countryId}
+                ref={(el) => (inputRefs.current.countryId = el)}
                 onChange={(e) =>
                   setRegisterData((prevData) => ({
                     ...prevData,
@@ -90,21 +106,21 @@ function Register() {
                 ))}
               </Select>
               <ButtonLarge $styles={{ margin: "0 0 16px 0" }} type="submit">
-                Kayıt Ol
+                Register
               </ButtonLarge>
             </InputContainer>
             <ButtonLink
               type="button"
               onClick={() => {
-                navigate("/login");
+                navigate(publicRoutes.login);
               }}
             >
-              Zaten bir hesabınız var mı?
+              Already have an account?
             </ButtonLink>
           </Col>
         </RegisterForm>
       </RegisterFormWrapper>
-    </MainContainer>
+    </>
   );
 }
 
@@ -112,6 +128,8 @@ export default Register;
 
 const marginBottom8px = { margin: "0 0 8px" };
 const marginBottom20px = { margin: "0 0 20px" };
+
+// Styled components.
 
 const Col = styled.div`
   display: flex;

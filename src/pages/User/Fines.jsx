@@ -20,7 +20,7 @@ function Fines() {
   return (
     <MainContainer $styles={{ background: background }}>
       <NavigationBar />
-      <TableWrapper>Ödünç aldığınız bir kitap yok.</TableWrapper>
+      <TableWrapper>Herhangi bir cezanız yok.</TableWrapper>
     </MainContainer>
   );
 }

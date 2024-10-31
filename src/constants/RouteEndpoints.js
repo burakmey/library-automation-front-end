@@ -5,6 +5,7 @@ export const publicRoutes = {
   register: "/register",
   search: "/search",
   reviewBook: "/search/book",
+  testHub: "/testHub",
 };
 
 // Protected Routes: "User", "Admin".

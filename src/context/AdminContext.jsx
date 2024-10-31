@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
-import useAuthContext from "../hooks/contexts/useAuthContext";
-import useAdminService from "../hooks/services/useAdminService";
+import useAuthContext from "../hooks/useAuthContext";
+import useAdminService from "../services/useUserService";
 
 const AdminContext = createContext();
 

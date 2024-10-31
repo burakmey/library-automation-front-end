@@ -23,7 +23,7 @@ function NavigationBar() {
       <Nav>
         <NavLink to={publicRoutes.base}>Home</NavLink>
         <NavLink to={publicRoutes.search}>Search Book</NavLink>
-        <NavLink to={publicRoutes.base}>About</NavLink>
+        <NavLink to={publicRoutes.testHub}>Test Hub</NavLink>
         {user?.role === "Admin" ? <NavLink to="/admin">Admin Panel</NavLink> : null}
       </Nav>
       {!user ? (

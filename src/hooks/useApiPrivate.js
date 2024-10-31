@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { apiPrivate } from "../api/axios";
-import { useAuthContext } from "./Hooks";
+import useAuthContext from "./useAuthContext";
 
 const useApiPrivate = () => {
   const { user, authRefresh } = useAuthContext();

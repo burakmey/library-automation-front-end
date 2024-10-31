@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import { UserProvider } from "./UserContext";
 import { AdminProvider } from "./AdminContext";
-import useAuthService from "../hooks/services/useAuthService";
+import useAuthService from "../services/useAuthService";
 import { LoginResponse } from "../models/auth/AuthModels";
 import { MessageResponse } from "../models/common/CommonModels";
 

@@ -1,15 +1,15 @@
 import { useEffect } from "react";
-import { TableButtons, TableContainer, TableData, TableHeader, TableRow, TableWrapper } from "../../components/Table/Table.styles";
-import { MainContainer } from "../../components/Container/Container.style";
 import { AcceptButton, RejectButton } from "../../components/Button/Button.styles";
+import { MainContainer } from "../../components/Container/Container.style";
+import { TableButtons, TableContainer, TableData, TableHeader, TableRow, TableWrapper } from "../../components/Table/Table.styles";
 import NavigationBar from "../../components/NavigationBar";
+import { desireSituationEnum } from "../../constants/SituationEnums";
 import useAdminContext from "../../hooks/useAdminContext";
-import { axiosPrivate } from "../../api/axios";
-
+import { DesireRequest } from "../../models/common/CommonModels";
 const background = "var(--background-linear)";
 
 function AcceptDesires() {
-  const { usersDesires, deleteUserDesire } = useAdminContext();
+  const { usersDesires, deleteUserDesire, acceptBorrow, acceptReserveBorrow, acceptReturn, rejectDesire } = useAdminContext();
 
   useEffect(() => {
     console.log("AcceptDesires mounted!");
@@ -17,42 +17,38 @@ function AcceptDesires() {
     return () => console.log("AcceptDesires unmounted!");
   }, []);
 
-  const handleAcceptButton = (desire) => {
-    const confirmed = window.confirm("İsteği onaylıyor musunuz?");
+  const handleAcceptButton = async (e, situation, desireId) => {
+    e.preventDefault();
+    const confirmed = window.confirm("Do you approve the request?");
     if (confirmed) {
-      let URL;
-      if (desire.desireSituation === "Ödünç") URL = process.env.REACT_APP_ADMIN_ACCEPT_BORROW_URL;
-      else if (desire.desireSituation === "Rezerve-Ödünç") URL = process.env.REACT_APP_ADMIN_ACCEPT_RESERVE_BORROW_URL;
-      else if (desire.desireSituation === "İade") URL = process.env.REACT_APP_ADMIN_ACCEPT_RETURN_URL;
-      const acceptDesire = async () => {
-        try {
-          const response = await axiosPrivate.post(URL, { desireId: desire.id });
-          deleteUserDesire(desire.id);
-          window.confirm(response.data);
-        } catch (error) {
-          window.confirm(error.response.data);
-        }
-      };
-      acceptDesire();
+      try {
+        let response;
+        const request = new DesireRequest({ desireId: desireId });
+        if (situation === desireSituationEnum.borrow) response = await acceptBorrow(request);
+        else if (situation === desireSituationEnum.reserveBorrow) response = await acceptReserveBorrow(request);
+        else if (situation === desireSituationEnum.return) response = await acceptReturn(request);
+        deleteUserDesire(desireId);
+        window.confirm(response.data);
+      } catch (error) {
+        window.confirm(error.response.data);
+      }
     } else {
       console.log("Action canceled.");
     }
   };
 
-  const handleRejectButton = (desireId) => {
-    const confirmed = window.confirm("İsteği reddediyor musunuz?");
+  const handleRejectButton = async (e, desireId) => {
+    e.preventDefault();
+    const confirmed = window.confirm("Do you reject the request?");
     if (confirmed) {
-      const rejectDesire = async () => {
-        try {
-          const rejectURL = process.env.REACT_APP_ADMIN_REJECT_DESIRE_URL;
-          const response = await axiosPrivate.delete(rejectURL, { data: { desireId: desireId } });
-          deleteUserDesire(desireId);
-          window.confirm(response.data);
-        } catch (error) {
-          window.confirm(error.response.data);
-        }
-      };
-      rejectDesire();
+      try {
+        const request = new DesireRequest({ desireId: desireId });
+        const response = rejectDesire(request);
+        deleteUserDesire(desireId);
+        window.confirm(response.data);
+      } catch (error) {
+        window.confirm(error.response.data);
+      }
     } else {
       console.log("Action canceled.");
     }
@@ -66,24 +62,24 @@ function AcceptDesires() {
           <TableContainer>
             <thead>
               <tr>
-                <TableHeader>Numara</TableHeader>
-                <TableHeader>Kişi Adı</TableHeader>
-                <TableHeader>Kitap Adı</TableHeader>
-                <TableHeader>İstek</TableHeader>
-                <TableHeader>Onayla</TableHeader>
+                <TableHeader>Number</TableHeader>
+                <TableHeader>User Name</TableHeader>
+                <TableHeader>Book Name</TableHeader>
+                <TableHeader>Desire</TableHeader>
+                <TableHeader>Approve</TableHeader>
               </tr>
             </thead>
             <tbody>
-              {usersDesires.map((row, index) => (
+              {usersDesires.map((usersDesire, index) => (
                 <TableRow key={index}>
                   <TableData>{index + 1}</TableData>
-                  <TableData>{row.userName}</TableData>
-                  <TableData>{row.bookName}</TableData>
-                  <TableData>{row.desireSituation}</TableData>
+                  <TableData>{usersDesire.userName}</TableData>
+                  <TableData>{usersDesire.bookName}</TableData>
+                  <TableData>{usersDesire.desireSituation}</TableData>
                   <TableData>
                     <TableButtons>
-                      <AcceptButton onClick={() => handleAcceptButton(row)}>Onay</AcceptButton>
-                      <RejectButton onClick={() => handleRejectButton(row.id)}>Ret</RejectButton>
+                      <AcceptButton onClick={(e) => handleAcceptButton(e, usersDesire.desireSituation, usersDesire.id)}>Accept</AcceptButton>
+                      <RejectButton onClick={(e) => handleRejectButton(e, usersDesire.id)}>Reject</RejectButton>
                     </TableButtons>
                   </TableData>
                 </TableRow>
@@ -91,7 +87,7 @@ function AcceptDesires() {
             </tbody>
           </TableContainer>
         ) : (
-          "Herhangi bir onaylama bulunmuyor."
+          "There is no confirmation."
         )}
         <TableContainer></TableContainer>
       </TableWrapper>

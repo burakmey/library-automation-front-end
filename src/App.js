@@ -9,6 +9,7 @@ import { publicRoutes, protecteRoutesdUser, protectedRoutesAdmin } from "./const
 import { AcceptDesires, AddBook, AdminPanel, BorrowedList, ReservedList, UpdateBook } from "./pages/AdminPages";
 import { Home, Login, Register, ReviewBook, SearchBook } from "./pages/AnonymousPages";
 import { BorrowedBooks, Fines, Profile, ReservedBooks, WaitingDesires } from "./pages/UserPages";
+import TestHub from "./pages/Anonymous/TestHub";
 
 function App() {
   useEffect(() => {
@@ -24,6 +25,7 @@ function App() {
           <Route>
             <Route path={publicRoutes.search} element={<SearchBook />} />
             <Route path={publicRoutes.reviewBook} element={<ReviewBook />} />
+            <Route path={publicRoutes.testHub} element={<TestHub />} />
           </Route>
           <Route element={<RequireAuth allowedRoles={["User", "Admin"]} />}>
             <Route path={protecteRoutesdUser.profile} element={<Profile />} />

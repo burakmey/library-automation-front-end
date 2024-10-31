@@ -4,7 +4,7 @@ import { TableButtons, TableContainer, TableData, TableHeader, TableRow, TableWr
 import { MainContainer } from "../../components/Container/Container.style";
 import { AcceptButton } from "../../components/Button/Button.styles";
 import NavigationBar from "../../components/NavigationBar";
-import { axiosPrivate } from "../../api/axios";
+import { apiPrivate as axiosPrivate } from "../../api/axios";
 
 const background = "var(--background-linear)";
 
